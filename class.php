@@ -17,6 +17,7 @@ class connectPDO extends PDO
 class methodGET
 {
     private $sql = "SELECT * FROM `Q1`;";
+    private $sql_id = "SELECT * FROM `Q1` WHERE `id` = :id;";
     private $res;
     private $data;
 
@@ -30,15 +31,28 @@ class methodGET
     {
         $this->res = $this->obj->prepare($this->sql);
         $this->res->execute();
-        $this->data = $this->res->fetchAll(connectPDO::FETCH_ASSOC);
     }
 
     public function getdata()
     {
+        $this->data = $this->res->fetchAll(connectPDO::FETCH_ASSOC);
         return json_encode($this->data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
 
+
+
+    public function execSQLid($id)
+    {
+        $this->res = $this->obj->prepare($this->sql_id);
+        $this->res->execute([
+            ':id' => $id
+        ]);
+    }
+
 }
+
+
+
 
 
 
