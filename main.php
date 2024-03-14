@@ -2,30 +2,49 @@
 require "class.php";
 header('Content-type: application/json');
 
-$method = $_SERVER['REQUEST_METHOD'];
+class Prepare
+{
+    public $method;
 
-$q = $_GET['q'];
-$params = explode('/' , $q);
+    public $objGET;
 
-$type = $params[0];
-$id = $params[1];
+    public $q;
+    public $params = [];
+    public $type;
+    public $id;
+    public function __construct()
+    {
+        $this->method = $_SERVER['REQUEST_METHOD'];
+        $this->q = $_GET['q'];
+        $this->params = explode('/' , $this->q);
+        $this->type = $this->params[0];
+        $this->id = $this->params[1];
+    }
 
-switch($method)
+    public function preGET()
+    {
+        $this->objGET = new methodGET();
+    }
+}
+
+$main_obj = new Prepare();
+
+switch($main_obj->method)
     {
         case "GET":
-            if($type === "main")
+            $main_obj->preGET();
+            if($main_obj->type === "main")
                 {
-                    $getall = new methodGET();
-                    if($id!= NULL)
+                    if($main_obj->id != NULL)
                         {
-                            $getall->execSQLid($id);
-                            $res = $getall->getdata();
+                            $main_obj->objGET->execSQLid($main_obj->id);
+                            $res = $main_obj->objGET->getdata();
                             echo $res;
                         }
                     else
                         {
-                            $getall->execSQL();
-                            $res = $getall->getdata();
+                            $main_obj->objGET->execSQL();
+                            $res = $main_obj->objGET->getdata();
                             echo $res;
                         }
             break;
