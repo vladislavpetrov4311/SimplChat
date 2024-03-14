@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  myapp:
+    image: mypdo
+    volumes: 
+      - ./:/var/www/html
+    ports:
+      - 9000:80
+  my_bd:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+  
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 3000:80
+    environment:
+      - PMA_ARBITRARY=1
