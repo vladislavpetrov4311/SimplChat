@@ -4,14 +4,32 @@ header('Content-type: application/json');
 
 $method = $_SERVER['REQUEST_METHOD'];
 
+$q = $_GET['q'];
+$params = explode('/' , $q);
+
+$type = $params[0];
+$id = $params[1];
+
 switch($method)
     {
         case "GET":
-            $getall = new methodGET();
-            $getall->execSQL();
-            $res = $getall->getdata();
-            echo $res;
+            if($type === "main")
+                {
+                    $getall = new methodGET();
+                    if($id!= NULL)
+                        {
+                            $getall->execSQLid($id);
+                            $res = $getall->getdata();
+                            echo $res;
+                        }
+                    else
+                        {
+                            $getall->execSQL();
+                            $res = $getall->getdata();
+                            echo $res;
+                        }
             break;
+                }
 
         case "POST":
             break;
@@ -23,7 +41,7 @@ switch($method)
             break;
 
         default:
-            echo "необрабатываемый request метод";
+            echo "необрабатываемый request метод"; 
 
     }
 
