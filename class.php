@@ -77,6 +77,53 @@ class methodPOST
 }
 
 
+class methodPATCH
+{
+    private $sql = "UPDATE `Q1` SET `body` = :body WHERE `id` = :id;";
+    private $res;
+    private $data = [];
+
+    private $obj;
+    public function __construct($data)
+    {
+        $this->obj = new connectPDO();
+        $this->data = $data;
+    }
+
+    public function execSQL()
+    {
+        $this->res = $this->obj->prepare($this->sql);
+        $this->res->execute([
+            ':body' => $this->data['body'],
+            ':id' => $this->data['id']
+        ]);
+    }
+
+}
+
+
+class methodDELETE
+{
+    private $sql = "DELETE FROM `Q1` WHERE `id` = :id;";
+    private $res;
+
+    private $obj;
+    public function __construct()
+    {
+        $this->obj = new connectPDO();
+    }
+
+    public function execSQL($id)
+    {
+        $this->res = $this->obj->prepare($this->sql);
+        $this->res->execute([
+            ':id' => $id
+        ]);
+    }
+
+}
+
+
 
 
 
