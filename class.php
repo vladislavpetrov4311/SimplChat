@@ -52,6 +52,31 @@ class methodGET
 }
 
 
+class methodPOST
+{   
+    private $sql = "INSERT INTO `Q1` (`body` , `time` , `author`) VALUES (:body , DATE_ADD(NOW(), INTERVAL 3 HOUR) , :author);";
+    private $res;
+    private $data = [];
+
+    private $obj;
+    public function __construct($data)
+    {
+        $this->obj = new connectPDO();
+        $this->data = $data;
+    }
+
+    public function execSQL()
+    {
+        $this->res = $this->obj->prepare($this->sql);
+        $this->res->execute([
+            ':body' => $this->data['body'],
+            ':author' => $this->data['author']
+        ]);
+    }
+
+}
+
+
 
 
 
