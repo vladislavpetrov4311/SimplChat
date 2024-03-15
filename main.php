@@ -2,28 +2,30 @@
 require "class.php";
 header('Content-type: application/json');
 
-class Prepare
+abstract class selMethod
 {
-    public $method;
-
-    public $objGET;
-
-    public $q;
-    public $params = [];
-    public $type;
-    public $id;
-    public function __construct()
-    {
-        $this->method = $_SERVER['REQUEST_METHOD'];
-        $this->q = $_GET['q'];
-        $this->params = explode('/' , $this->q);
-        $this->type = $this->params[0];
-        $this->id = $this->params[1];
-    }
+    public $obj;
 
     public function preGET()
     {
-        $this->objGET = new methodGET();
+        return $this->obj = new methodGET();
+    }
+
+    public function prePOST($data)
+    {
+        return $this->obj = new methodPOST($data);
+    }
+}
+
+class Prepare extends selMethod
+{
+    public $method;
+    public $params = [];
+
+    public function __construct()
+    {
+        $this->method = $_SERVER['REQUEST_METHOD'];
+        $this->params = explode('/' , $_GET['q']);
     }
 }
 
@@ -33,24 +35,30 @@ switch($main_obj->method)
     {
         case "GET":
             $main_obj->preGET();
-            if($main_obj->type === "main")
+            if($main_obj->params[0] === "main")
                 {
-                    if($main_obj->id != NULL)
+                    if($main_obj->params[1] != NULL)
                         {
-                            $main_obj->objGET->execSQLid($main_obj->id);
-                            $res = $main_obj->objGET->getdata();
+                            $main_obj->obj->execSQLid($main_obj->params[1]);
+                            $res = $main_obj->obj->getdata();
                             echo $res;
                         }
                     else
                         {
-                            $main_obj->objGET->execSQL();
-                            $res = $main_obj->objGET->getdata();
+
+                            $main_obj->obj->execSQL();
+                            $res = $main_obj->obj->getdata();
                             echo $res;
                         }
             break;
                 }
 
         case "POST":
+            $main_obj->prePOST($_POST);
+            if($main_obj->params[0] === "main")
+                {
+                    $main_obj->obj->execSQL();
+                }
             break;
 
         case "PATCH":
