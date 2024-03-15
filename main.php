@@ -15,6 +15,16 @@ abstract class selMethod
     {
         return $this->obj = new methodPOST($data);
     }
+
+    public function prePATCH($data)
+    {
+        return $this->obj = new methodPATCH($data);
+    }
+
+    public function preDELETE()
+    {
+        return $this->obj = new methodDELETE();
+    }
 }
 
 class Prepare extends selMethod
@@ -29,42 +39,89 @@ class Prepare extends selMethod
     }
 }
 
-$main_obj = new Prepare();
+class switchMethod
+{
+    public $switch_obj;
+    public function __construct($obj)
+    {
+        $this->switch_obj = $obj;
+    }
 
+
+    public function bodyGETid()
+    {
+        $this->switch_obj->obj->execSQLid($this->switch_obj->params[1]);
+        $res = $this->switch_obj->obj->getdata();
+        echo $res;
+    }
+
+    public function bodyGET()
+    {
+        $this->switch_obj->obj->execSQL();
+        $res = $this->switch_obj->obj->getdata();
+        echo $res;
+    }
+
+    public function bodyPOST()
+    {
+        $this->switch_obj->obj->execSQL();
+    }
+
+    public function bodyPATCH()
+    {
+        $this->switch_obj->obj->execSQL();
+    }
+
+    public function bodyDELETE($id)
+    {
+        $this->switch_obj->obj->execSQL($id);
+    }
+}
+
+
+
+$main_obj = new Prepare();
+$SW_class = new switchMethod($main_obj);
+
+if($main_obj->params[0] === "main")
+{
 switch($main_obj->method)
     {
         case "GET":
             $main_obj->preGET();
-            if($main_obj->params[0] === "main")
+            if($main_obj->params[1] != NULL)
                 {
-                    if($main_obj->params[1] != NULL)
-                        {
-                            $main_obj->obj->execSQLid($main_obj->params[1]);
-                            $res = $main_obj->obj->getdata();
-                            echo $res;
-                        }
-                    else
-                        {
-
-                            $main_obj->obj->execSQL();
-                            $res = $main_obj->obj->getdata();
-                            echo $res;
-                        }
-            break;
+                    $SW_class->bodyGETid();
                 }
+                else
+                {
+                    $SW_class->bodyGET();
+                }
+            break;
 
         case "POST":
             $main_obj->prePOST($_POST);
-            if($main_obj->params[0] === "main")
-                {
-                    $main_obj->obj->execSQL();
-                }
+            $SW_class->bodyPOST();
             break;
 
         case "PATCH":
+            if($main_obj->params[1] != NULL)
+            {
+            $data = file_get_contents('php://input');
+            $data = json_decode($data, true);
+            $data['id'] = $main_obj->params[1];
+
+            $main_obj->prePATCH($data);
+            $SW_class->bodyPATCH();
+            }
             break;
 
         case "DELETE":
+            if($main_obj->params[1] != NULL)
+            {
+                $main_obj->preDELETE();
+                $SW_class->bodyDELETE($main_obj->params[1]);
+            }
             break;
 
         default:
@@ -72,7 +129,7 @@ switch($main_obj->method)
 
     }
 
-
+}
 
 
 
