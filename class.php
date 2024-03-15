@@ -54,7 +54,7 @@ class methodGET
 
 class methodPOST
 {   
-    private $sql = "INSERT INTO `Q1` (`body` , `time` , `author`) VALUES (:body , DATE_ADD(NOW(), INTERVAL 3 HOUR) , :author);";
+    private $sql = "INSERT INTO `Q1` (`body` , `time` , `author`) VALUES (:body , ADDTIME(NOW(), '03:00') , :author);";
     private $res;
     private $data = [];
 
