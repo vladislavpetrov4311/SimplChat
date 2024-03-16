@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: my_bd
--- Время создания: Мар 15 2024 г., 06:45
+-- Время создания: Мар 16 2024 г., 04:48
 -- Версия сервера: 8.2.0
 -- Версия PHP: 8.2.14
 
@@ -39,7 +39,8 @@ CREATE TABLE `Q1` (
 --
 
 INSERT INTO `Q1` (`id`, `body`, `time`, `author`) VALUES
-(102, ' укп123', '09:44:23', 'null');
+(1, 'привет', '07:47:47', 'vlad'),
+(2, 'салют', '07:48:05', 'max');
 
 --
 -- Индексы сохранённых таблиц
@@ -59,7 +60,7 @@ ALTER TABLE `Q1`
 -- AUTO_INCREMENT для таблицы `Q1`
 --
 ALTER TABLE `Q1`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
