@@ -13,6 +13,9 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: testDB
+    volumes:
+      - ./testDB4.sql:/docker-entrypoint-initdb.d/testDB4.sql
   
   phpmyadmin:
     image: phpmyadmin
