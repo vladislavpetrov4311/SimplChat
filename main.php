@@ -4,88 +4,9 @@ header('Access-Control-Allow-Headers: *');
 header('Access-Control-Allow-Methods: *');
 header('Access-Control-Allow-Credentials: true');
 
-require "class.php";
-header('Content-type: application/json');
+require_once "main_class.php";
 
-abstract class selMethod
-{
-    public $obj;
-
-    public function preGET()
-    {
-        return $this->obj = new methodGET();
-    }
-
-    public function prePOST($data)
-    {
-        return $this->obj = new methodPOST($data);
-    }
-
-    public function prePATCH($data)
-    {
-        return $this->obj = new methodPATCH($data);
-    }
-
-    public function preDELETE()
-    {
-        return $this->obj = new methodDELETE();
-    }
-}
-
-class Prepare extends selMethod
-{
-    public $method;
-    public $params = [];
-
-    public function __construct()
-    {
-        $this->method = $_SERVER['REQUEST_METHOD'];
-        $this->params = explode('/' , $_GET['q']);
-    }
-}
-
-class switchMethod
-{
-    public $switch_obj;
-    public function __construct($obj)
-    {
-        $this->switch_obj = $obj;
-    }
-
-
-    public function bodyGETid()
-    {
-        $this->switch_obj->obj->execSQLid($this->switch_obj->params[1]);
-        $res = $this->switch_obj->obj->getdata();
-        echo $res;
-    }
-
-    public function bodyGET()
-    {
-        $this->switch_obj->obj->execSQL();
-        $res = $this->switch_obj->obj->getdata();
-        echo $res;
-    }
-
-    public function bodyPOST()
-    {
-        $this->switch_obj->obj->execSQL();
-    }
-
-    public function bodyPATCH()
-    {
-        $this->switch_obj->obj->execSQL();
-    }
-
-    public function bodyDELETE($id)
-    {
-        $this->switch_obj->obj->execSQL($id);
-    }
-}
-
-
-
-$main_obj = new Prepare();
+$main_obj = new Prepare($_SERVER['REQUEST_METHOD'] , $_GET['q']);
 $SW_class = new switchMethod($main_obj);
 
 if($main_obj->params[0] === "main")
@@ -135,9 +56,6 @@ switch($main_obj->method)
     }
 
 }
-
-
-
 
 
 ?>
